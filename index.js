@@ -1,10 +1,16 @@
-let hexagon = "https://ya-webdesign.com/images/hylian-shield-png-5.png";
+const hexagon = "https://ya-webdesign.com/images/hylian-shield-png-5.png";
+const stripeimg = "images/stripe.png";
 
-let obstacles = [];
+let frames = 0;
+let interval;
+const obstacles = [];
+//let obstaclesArray = [];
 
 window.onload = () => {
   const canvas = document.querySelector("canvas");
   const ctx = canvas.getContext("2d");
+
+  //CLASES
 
   class Player {
     constructor(img, x, y) {
@@ -41,53 +47,75 @@ window.onload = () => {
     //}
   }
 
-  const player = new Player(hexagon, 0, 105);
-  let frames = 0;
-  let interval;
-
-  let obstaclesArray = [];
-
-  class Stripe {
-    constructor(y = 0, height = 270, type) {
-      this.x = canvas.width;
-      this.y = y;
-      this.width = Math.floor(Math.random() * 50);
+  class Stripe {  // X
+    constructor(y = 0, height = canvas.height, width = canvas.width, type) {
+      this.x = Math.floor(Math.random() *700);
+      this.y = 0;
+      this.width = Math.floor(Math.random() *50);
       this.height = height;
-      0;
       this.type = type;
+      this.img1 = new Image();
+      this.img1.src = stripeimg;
+      //this.generateStripe()
+      //this..onload = () => {
+      //  this.draw();
+      //};
     }
     draw() {
       if (this.type) {
         ctx.drawImage(this.img1, this.x, this.y, this.width, this.height);
       } else {
-        ctx.drawImage(this.img2, this.x, this.y, this.width, this.height);
+        console.log(
+          this.x,
+          this.y,
+          this.width,
+          this.height,
+          this.type,
+          this.img1.src
+        );
+
+        ctx.drawImage(this.img1, this.x, this.y, this.width, canvas.height);
       }
       // this.x--;
     }
   }
 
-  function generateStripe(array) {
-    array.slice(0, 3).forEach(obstacle => {
+  //DEFINICIONES
+  const player = new Player(hexagon, 0, 105);
+
+  //FLUJO PRINCIPAL
+  function update() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    //board.draw()
+    player.draw();
+    generateStripe();
+    obstacles.forEach(obstacle => {
       obstacle.draw();
     });
+    //drawObstacles()
 
-    function update() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      //board.draw()
-      player.draw();
-      if (frames % 60 === 0);
-      obstaclesArray.unshift(new Obstacle(300));
-    }
-    drawObstacles(obstaclesArray);
+    //if (frames % 60 === 0);
+    //obstaclesArray.unshift(new Obstacle(300));
     frames++;
-
-    obstaclesArray.push();
   }
 
   function startGame() {
     if (interval) return;
     interval = setInterval(update, 1000 / 60);
   }
+
+  //HELPERS
+
+  function generateStripe() {
+    const randomHeight = Math.floor(Math.random() * 50);
+    if (frames > 0 && frames % 30 === 0) {
+      const obs1 = new Stripe(randomHeight, 400, false);
+      obstacles.push(obs1);
+    }
+  }
+
+  // drawObstacles(obstaclesArray);
+  // obstaclesArray.push();
 
   document.addEventListener("keydown", e => {
     switch (e.keyCode) {
