@@ -23,7 +23,7 @@ window.onload = () => {
       };
     }
     draw() {
-      ctx.drawImage(this.img, this.x, this.y, 30, 30);
+      ctx.drawImage(this.img, this.x, this.y, 50, 50);
     }
 
     moveUp() {
@@ -38,20 +38,21 @@ window.onload = () => {
     moveLeft() {
       this.x -= 25;
     }
-    // isTouching(obstacle){
-    //   return  (this.x < obstacle.x + obstacle.width) &&
-    //           (this.x + 15  > obstacle.x) &&
-    //           (this.y < obstacle.y + obstacle.height) &&
-    //           (this.y + 15 > obstacle.y)
-    //}
-    //}
+    isTouching(obstacle) {
+      return (this.x < obstacle.x + obstacle.width) &&
+        (this.x + this.width > obstacle.x) &&
+        (this.y < obstacle.y + obstacle.height) &&
+        (this.y + this.height > obstacle.y);
+    }
+
   }
 
-  class Stripe {  // X
+  class Stripe {
+    // X
     constructor(y = 0, height = canvas.height, width = canvas.width, type) {
-      this.x = Math.floor(Math.random() *700);
+      this.x = Math.floor(Math.random() * 700);
       this.y = 0;
-      this.width = Math.floor(Math.random() *50);
+      this.width = Math.floor(Math.random() * 50);
       this.height = height;
       this.type = type;
       this.img1 = new Image();
@@ -65,16 +66,50 @@ window.onload = () => {
       if (this.type) {
         ctx.drawImage(this.img1, this.x, this.y, this.width, this.height);
       } else {
-        console.log(
-          this.x,
-          this.y,
-          this.width,
-          this.height,
-          this.type,
-          this.img1.src
-        );
+        //console.log(
+        //  this.x,
+        //  this.y,
+        //  this.width,
+        //  this.height,
+        //  this.type,
+        //  this.img1.src
+        //);
 
         ctx.drawImage(this.img1, this.x, this.y, this.width, canvas.height);
+      }
+      // this.x--;
+    }
+  }
+
+  class StripeY {
+    // y
+    constructor(y = 0, height = canvas.height, width = canvas.width, type) {
+      this.x = 0;
+      this.y = Math.floor(Math.random() * 500);
+      this.width = width;
+      this.height = Math.floor(Math.random() * 50);
+      this.type = type;
+      this.img1 = new Image();
+      this.img1.src = stripeimg;
+      //this.generateStripe()
+      //this..onload = () => {
+      //  this.draw();
+      //};
+    }
+    draw() {
+      if (this.type) {
+        ctx.drawImage(this.img1, this.x, this.y, this.width, this.height);
+      } else {
+        //console.log(
+        //  this.x,
+        //  this.y,
+        //  this.width,
+        //  this.height,
+        //  this.type,
+        //  this.img1.src
+        //);
+
+        ctx.drawImage(this.img1, this.x, this.y, canvas.width, this.height);
       }
       // this.x--;
     }
@@ -89,7 +124,7 @@ window.onload = () => {
     //board.draw()
     player.draw();
     generateStripe();
-    obstacles.forEach(obstacle => {
+    obstacles.slice(-4).forEach(obstacle => {
       obstacle.draw();
     });
     //drawObstacles()
@@ -108,9 +143,14 @@ window.onload = () => {
 
   function generateStripe() {
     const randomHeight = Math.floor(Math.random() * 50);
-    if (frames > 0 && frames % 30 === 0) {
+    const randomWidth = Math.floor(Math.random() * 50);
+    if (frames > 0 && frames % 60 === 0) {
       const obs1 = new Stripe(randomHeight, 400, false);
       obstacles.push(obs1);
+    }
+    if (frames > 0 && frames % 90 === 0) {
+      const obs2 = new StripeY(400, randomWidth, true);
+      obstacles.push(obs2);
     }
   }
 
