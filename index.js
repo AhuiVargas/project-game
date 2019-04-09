@@ -39,12 +39,13 @@ window.onload = () => {
       this.x -= 25;
     }
     isTouching(obstacle) {
-      return (this.x < obstacle.x + obstacle.width) &&
-        (this.x + this.width > obstacle.x) &&
-        (this.y < obstacle.y + obstacle.height) &&
-        (this.y + this.height > obstacle.y);
+      return (
+        this.x < obstacle.x + obstacle.width &&
+        this.x + 50 > obstacle.x &&
+        this.y < obstacle.y + obstacle.height &&
+        this.y + 50 > obstacle.y
+      );
     }
-
   }
 
   class Stripe {
@@ -127,6 +128,7 @@ window.onload = () => {
     obstacles.slice(-4).forEach(obstacle => {
       obstacle.draw();
     });
+    checkCollition();
     //drawObstacles()
 
     //if (frames % 60 === 0);
@@ -152,6 +154,18 @@ window.onload = () => {
       const obs2 = new StripeY(400, randomWidth, true);
       obstacles.push(obs2);
     }
+  }
+
+  function gameOver() {
+    clearInterval(interval);
+    ctx.fillText("Game over", canvas.width / 2 - 20, canvas.height / 2);
+    // buttonStart.style.display = "block";
+  }
+
+  function checkCollition() {
+    obstacles.forEach(obstacle => {
+      if (player.isTouching(obstacle)) gameOver();
+    });
   }
 
   // drawObstacles(obstaclesArray);
