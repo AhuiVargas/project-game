@@ -1,4 +1,4 @@
-const hexagon = "https://ya-webdesign.com/images/hylian-shield-png-5.png";
+const hexagon = "images/Hexagon-Light-Blue-PNG.png";
 const stripeimg = "images/stripe.png";
 
 let frames = 0;
@@ -13,7 +13,7 @@ window.onload = () => {
   //CLASES
 
   class Player {
-    constructor(img, x, y) {
+    constructor(img, x=400, y=250) {
       this.x = x;
       this.y = y;
       this.img = new Image();
@@ -23,7 +23,7 @@ window.onload = () => {
       };
     }
     draw() {
-      ctx.drawImage(this.img, this.x, this.y, 50, 50);
+      ctx.drawImage(this.img, this.x, this.y, 40, 40);
     }
 
     moveUp() {
@@ -177,15 +177,17 @@ window.onload = () => {
         startGame();
         break;
       case 38:
-        player.moveUp();
+      if(player.y > 0) player.moveUp();
         break;
       case 40:
-        player.moveDown();
+      if(player.y <= canvas.height) player.moveDown();
         break;
       case 37:
+      if(player.x > 0)
         player.moveLeft();
         break;
       case 39:
+      if(player.x <= canvas.width)
         player.moveRight();
         break;
     }
