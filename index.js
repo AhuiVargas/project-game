@@ -1,4 +1,5 @@
-const hexagon = "images/Hexagon-Light-Blue-PNG.png";
+const hexagon = "images/hex.png";
+const green = "images/green.svg"
 const stripeimg = "images/stripe.png";
 
 let frames = 0;
@@ -21,14 +22,14 @@ window.onload = () => {
 
   //CLASES
 
-  class Board {
-    constructor() {
-      this.x = 0;
-      this.y = 0;
-      this.width = canvas.width;
-      this.height = canvas.height;
-    }
-  }
+  //class Board {
+  //  constructor() {
+  //    this.x = 0;
+  //    this.y = 0;
+  //    this.width = canvas.width;
+  //    this.height = canvas.height;
+  //  }
+  //}
 
   class Player {
     constructor(img, x, y) {
@@ -66,6 +67,45 @@ window.onload = () => {
         );
     }
   }
+
+  class Player2 {
+    constructor(img, x, y) {
+      this.x = x;
+      this.y = y;
+      this.img = new Image();
+      this.img.src = green;
+      this.img.onload = () => {
+        this.draw();
+      };
+    }
+    draw() {
+      ctx.drawImage(this.img, this.x, this.y, 30, 30);
+    }
+
+    moveUp() {
+      this.y -= 25;
+    }
+    moveDown() {
+      this.y += 25;
+    }
+    moveRight() {
+      this.x += 25;
+    }
+    moveLeft() {
+      this.x -= 25;
+    }
+    isTouching(obstacle) {
+      if (obstacle.type === true)
+        return (
+          this.x <= obstacle.x + obstacle.width &&
+          this.x + 30 >= obstacle.x + 50 &&
+          this.y <= obstacle.y + obstacle.height &&
+          this.y + 30 >= obstacle.y
+        );
+    }
+  }
+
+
 
   class Stripe {
     // X
@@ -117,7 +157,8 @@ window.onload = () => {
   // }
 
   //DEFINICIONES
-  const player = new Player(hexagon, 0, 105);
+  const player = new Player(hexagon, 400, 230);
+  const player2 = new Player2(green, 200, 230);
 
   //FLUJO PRINCIPAL
   function update() {
@@ -125,12 +166,13 @@ window.onload = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     //board.draw()
     player.draw();
+    player2.draw();
     activeObstacles.forEach(obstacle => {
       //obstacle.draw("rgba(255, 44, 153, 0.4)");
       obstacle.draw();
       obstacle.color("white");
     });
-    isSolid();
+   // isSolid();
     checkCollition(activeObstacles);
     generateStripe();
     frames++;
@@ -148,25 +190,26 @@ window.onload = () => {
   function generateStripe() {
     const randomHeight = Math.floor(Math.random() * 50);
     const randomWidth = Math.floor(Math.random() * 50);
-    if (frames > 87 && frames % 30 === 0) {
-      const obs1 = new Stripe(0, randomWidth, canvas.height, false);
+    if (frames > 87 && frames % 90 === 0) {
+      const obs1 = new Stripe(0, randomWidth, canvas.height, true);
       obstacles.push(obs1);
     }
-    if (frames > 87 && frames % 60 === 0) {
-      const obs2 = new StripeY(0, randomHeight, canvas.width, false);
+    if (frames > 87 && frames % 30 === 0) {
+      const obs2 = new StripeY(0, randomHeight, canvas.width, true);
       obstacles.push(obs2);
     }
   }
-  function isSolid() {
-    setTimeout(() => {
-      obstacles.forEach((obstacles, obs1, obs2) => {
-        if (obs2.type === false) obs2.type = true;
-        obs2.color("rgba(255, 44, 153)");
-        if (obs1.type === false) obs1.type = true;
-        obs1.color("rgba(255, 44, 153)");
-      });
-    }, 30);
-  }
+  //function isSolid() {
+  //  setTimeout(() => {
+  //    obstacles.forEach((obs1) => {
+  //      console.log(obs1)
+  //      if (obs1.type === false) obs1.type = true;
+  //     obs1.color("peru")
+  //      // if (obs1.type === false) obs1.type = true;
+  //    //obs1.style.color("rgba(255, 44, 153)");
+  //    });
+  //  }, 300);
+  //}
 
   //function isSolid() {
   //  if (obsta.type === false)
@@ -185,6 +228,7 @@ window.onload = () => {
   function checkCollition(activeObstacles) {
     activeObstacles.forEach(obstacle => {
       if (player.isTouching(obstacle)) gameOver();
+      if (player2.isTouching(obstacle)) gameOver()
     });
   }
 
@@ -210,4 +254,21 @@ window.onload = () => {
         break;
     }
   });
+
+  document.addEventListener("keydown", e => {
+    switch (e.keyCode) {
+      case 87:
+        if (player2.y > 0) player2.moveUp();
+        break;
+      case 83:
+        if (player2.y <= canvas.height) player2.moveDown();
+        break;
+      case 65:
+        if (player2.x > 0) player2.moveLeft();
+        break;
+      case 68:
+        if (player2.x <= canvas.width) player2.moveRight();
+        break;
+    }
+  })
 };
