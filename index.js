@@ -1,5 +1,5 @@
 const hexagon = "images/hex.png";
-const green = "images/green.svg"
+const green = "images/green.svg";
 const stripeimg = "images/stripe.png";
 
 let frames = 0;
@@ -17,7 +17,6 @@ startMusic.currentTime = 0;
 window.onload = () => {
   const canvas = document.querySelector("canvas");
   const ctx = canvas.getContext("2d");
-  // const ctxLetras = fillStyle ="white"
   intro.play();
 
   //CLASES
@@ -35,6 +34,7 @@ window.onload = () => {
     constructor(img, x, y) {
       this.x = x;
       this.y = y;
+      this.touch = false;
       this.img = new Image();
       this.img.src = hexagon;
       this.img.onload = () => {
@@ -42,28 +42,32 @@ window.onload = () => {
       };
     }
     draw() {
-      ctx.drawImage(this.img, this.x, this.y, 30, 30);
+      ctx.drawImage(this.img, this.x, this.y, 25, 25);
     }
 
     moveUp() {
+      if(this.touch) return
       this.y -= 25;
     }
     moveDown() {
+      if(this.touch) return
       this.y += 25;
     }
     moveRight() {
+      if(this.touch) return
       this.x += 25;
     }
     moveLeft() {
+      if(this.touch) return
       this.x -= 25;
     }
     isTouching(obstacle) {
       if (obstacle.type === true)
-        return (
-          this.x <= obstacle.x + obstacle.width &&
-          this.x + 30 >= obstacle.x + 50 &&
-          this.y <= obstacle.y + obstacle.height &&
-          this.y + 30 >= obstacle.y
+      return (
+        this.x <= obstacle.x + obstacle.width &&
+        this.x + 25 >= obstacle.x + 50 &&
+        this.y <= obstacle.y + obstacle.height &&
+        this.y + 25 >= obstacle.y
         );
     }
   }
@@ -72,6 +76,7 @@ window.onload = () => {
     constructor(img, x, y) {
       this.x = x;
       this.y = y;
+      this.touch = false;
       this.img = new Image();
       this.img.src = green;
       this.img.onload = () => {
@@ -79,33 +84,36 @@ window.onload = () => {
       };
     }
     draw() {
-      ctx.drawImage(this.img, this.x, this.y, 30, 30);
+      ctx.drawImage(this.img, this.x, this.y, 25, 25);
     }
 
     moveUp() {
+      if(this.touch) return
       this.y -= 25;
     }
     moveDown() {
+      if(this.touch) return
       this.y += 25;
     }
     moveRight() {
+      if(this.touch) return
       this.x += 25;
     }
     moveLeft() {
+      if(this.touch) return
       this.x -= 25;
     }
     isTouching(obstacle) {
       if (obstacle.type === true)
-        return (
-          this.x <= obstacle.x + obstacle.width &&
-          this.x + 30 >= obstacle.x + 50 &&
-          this.y <= obstacle.y + obstacle.height &&
-          this.y + 30 >= obstacle.y
+      return (
+        this.x <= obstacle.x + obstacle.width &&
+        this.x + 25 >= obstacle.x + 50 &&
+        this.y <= obstacle.y + obstacle.height &&
+        this.y + 25 >= obstacle.y
         );
-    }
+       
+    } 
   }
-
-
 
   class Stripe {
     // X
@@ -115,18 +123,9 @@ window.onload = () => {
       this.width = Math.floor(Math.random() * 50);
       this.height = height;
       this.type = type;
-      //this.img1 = new Image();
-      //this.img1.src = stripeimg;
     }
-
     draw() {
-      //    if (this.type) {
-      //      ctx.drawImage(this.img1, this.x, this.y, this.width, this.height);
-      //    } else {
-      //ctx.drawImage(this.img1, this.x, this.y, this.width, canvas.height);
-
       ctx.fillRect(this.x, this.y, this.height, canvas.width);
-      //  }
     }
     color(color) {
       ctx.fillStyle = color;
@@ -141,24 +140,18 @@ window.onload = () => {
       this.width = width;
       this.height = Math.floor(Math.random() * 50);
       this.type = type;
-      //this.img1 = new Image();
-      //this.img1.src = stripeimg;
     }
     draw() {
-      //if (this.type) {
-      //  ctx.drawImage(this.img1, this.x, this.y, this.width, this.height);
-      //} else {
       ctx.fillRect(this.x, this.y, canvas.width, this.height);
     }
     color(color) {
       ctx.fillStyle = color;
     }
   }
-  // }
 
   //DEFINICIONES
-  const player = new Player(hexagon, 400, 230);
-  const player2 = new Player2(green, 200, 230);
+  const player = new Player(hexagon, 430, 230);
+  const player2 = new Player2(green, 230, 230);
 
   //FLUJO PRINCIPAL
   function update() {
@@ -168,11 +161,11 @@ window.onload = () => {
     player.draw();
     player2.draw();
     activeObstacles.forEach(obstacle => {
-      //obstacle.draw("rgba(255, 44, 153, 0.4)");
+     // obstacle.draw("rgba(255, 44, 153, 0.4)");
       obstacle.draw();
-      obstacle.color("white");
+      obstacle.color("rgba(255, 44, 153)");
     });
-   // isSolid();
+    // isSolid();
     checkCollition(activeObstacles);
     generateStripe();
     frames++;
@@ -211,29 +204,58 @@ window.onload = () => {
   //  }, 300);
   //}
 
-  //function isSolid() {
-  //  if (obsta.type === false)
-  //    setTimeout(function() {
-  //      stripe.type = true;
-  //      ctx.fillStyle = "rgba(255, 44, 153, 0.4)";
-  //    }, 30);
-  //}
-
   function gameOver() {
     clearInterval(interval);
     ctx.fillText("Game over", canvas.width / 2 - 20, canvas.height / 2);
     startMusic.pause();
   }
 
+  function player1Out() {
+   // player.clearRect();
+   let out1 = true;
+   ctx.fillText(
+      "Player One is out!",
+      canvas.width / 2 - 20,
+      canvas.height / 2
+    );
+  }
+  let out1 = false;
+  let out2 = false;
+
+  function player2Out() {
+   // clearInterval(player2);
+    ctx.fillText(
+      "Player Two is out!",
+      canvas.width / 2 - 20,
+      canvas.height / 2
+    );
+    //setTimeout (() => {
+    //  clearText
+    //},1000)
+  }
+
   function checkCollition(activeObstacles) {
     activeObstacles.forEach(obstacle => {
-      if (player.isTouching(obstacle)) gameOver();
-      if (player2.isTouching(obstacle)) gameOver()
+      if (player.isTouching(obstacle)) {
+        player.touch = true;
+        player1Out();
+      }
+      if (player2.isTouching(obstacle)) player2.touch = true, player2Out();
+      if (player.touch === true && player2.touch === true) gameOver();
     });
   }
 
-  // drawObstacles(obstaclesArray);
-  // obstaclesArray.push();
+
+  //function checkCollition(activeObstacles) {
+  //  activeObstacles.forEach(obstacle => {
+  //    if (player.isTouching(obstacle)) player1Out();
+  //    if (player2.isTouching(obstacle)) player2Out();
+  //    if (out1 === true && out2 === true) gameOver();
+  //  });
+  //}
+
+  
+//LISTENERS
 
   document.addEventListener("keydown", e => {
     switch (e.keyCode) {
@@ -255,6 +277,7 @@ window.onload = () => {
     }
   });
 
+ 
   document.addEventListener("keydown", e => {
     switch (e.keyCode) {
       case 87:
@@ -270,5 +293,5 @@ window.onload = () => {
         if (player2.x <= canvas.width) player2.moveRight();
         break;
     }
-  })
+  });
 };
